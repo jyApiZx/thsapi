@@ -1,148 +1,91 @@
-# 同花顺交易接口  
+# 同花顺交易接口与通达信行情接口
 
-**同花顺交易接口，L1 与扩展行情接口。直连券商，无需启动客户端，支持所有券商。产品介绍见 [thsapi.com](https://thsapi.com/)。技术支持请联系 [Telegram：@Thsapi](https://t.me/Thsapi)**
+同花顺交易接口、通达信交易接口和通达信行情接口（thsapi / tdxapi）。交易库 `thsapi.dll` 直接连接券商，不用打开同花顺客户端。行情库 `HqApi.dll` 走通达信行情协议，A 股用 `TdxHq_*`，期货等扩展行情用 `TdxExHq_*`。Python、C++、C#、Java 都可以接，32 位和 64 位都有，程序位数要和 DLL 一致。
 
-交易库是 `thsapi.dll`，行情库是 `HqApi.dll`，都有 32 位和 64 位。Python、Java、C#、C/C++ 都可以接。下面按使用顺序说明授权、安全和安装。调用参数见后文，也可以看 [thsapi.com](https://thsapi.com/)。
+产品说明见 [thsapi.com](https://thsapi.com/)。联系 [Telegram：@Thsapi](https://t.me/Thsapi)。授权与价格见 [官网](https://thsapi.com/#license)。
 
-## 下载试用
+## 功能
 
-交易测试包：最新版 1.0.7.13（[64 位](https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip)、[32 位](https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)），稳定版 1.0.7.12（[64 位](https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip)、[32 位](https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)）。包内是 `thsapi.dll`、`xdDemo.exe` 和券商站点列表。
+- 登录后查询资金、持仓、委托和成交，再下单、撤单。成交通过 `SetPushCallback` 推送，不用轮询。
+- 支持融资融券、新股申购、场内基金和银证转账。
+- 可以单账户操作，也可以多个账户同时在线。同一账户可以批量查询、下单和撤单。
+- 行情提供 L1 五档、Tick、分时和 K 线，扩展行情包括期货等。交易连接上也可以取五档快照。
 
-行情测试包 1.0.7.0，里面是 `HqApi.dll` 和行情测试程序：[64 位](https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip)、[32 位](https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip)。授权含 L1 与扩展行情。
+2.0 版结果为 UTF-8，由 DLL 分配内存，不用预分配缓冲区。先用 Demo 登录一次，代码里不用填 IP、端口和营业部。
 
-初次使用，如果您对产品还有疑虑，可以用同花顺模拟账户测试。登录账号填手机号、同花顺账户或股东账户，三选一，资金账号留空。[模拟账户怎么填](https://thsapi.com/sim.html)，仓库说明见 [模拟账户.md](模拟账户.md)。
+Tradex 版函数名和调用方式与老版一致（`Logon`、`QueryData`、`SendOrder`），直接替换 DLL。
+
+也可以通过 MCP，让常用 AI 客户端查持仓、看行情、下单。下单默认关闭，每笔先预览，确认后才提交。
+
+这是把已有策略接到券商上的接口。
+
+## 下载
+
+接口分两版，文档和示例各自独立：
+
+- **新用户用 2.0 版**：结果为 UTF-8，由 DLL 分配内存，不用预分配缓冲区；先用 Demo 登录一次生成 `login_prefs.json`，代码里不用填 IP、端口、营业部。文档见 [2.0 版总览](https://thsapi.com/v2/)。
+- **老用户用 Tradex 版**：函数名和调用方式与老版 Tradex 一致（`Logon`、`QueryData`、`SendOrder`），直接替换 DLL。文档见 [Tradex 版交易](https://thsapi.com/trade.html)、[Tradex 版行情](https://thsapi.com/hq.html)。
+
+**2.0 版 · 交易 2.0.0**：[64 位](https://thsapi.com/downloads/thsapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/thsapi_2.0.0_x32.zip)。包内 `thsapi.dll`、`xdDemo.exe`、Python / C++ / C# / Java 示例、Python wheel 与 Skill。
+
+**2.0 版 · 行情 2.0.0**：[64 位](https://thsapi.com/downloads/hqapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/hqapi_2.0.0_x32.zip)。同样含四种语言示例。
+
+**2.0 版 · Python SDK**（官网 wheel，不上 PyPI）：`pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl`。见 [Python 快速开始](https://thsapi.com/v2/python.html)。
+
+**Tradex 版**：交易 1.0.7.13（[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)），稳定版 1.0.7.12（[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)）。行情 1.0.7.0：[64 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip)。
+
+DLL 在测试包里，不在 git 仓库中。
 
 ## 调用示例
 
-交易：
+**2.0 版**（先用 Demo 登录一次，示例会读取 `login_prefs.json`）
 
-- [C++](交易/cpp/Demo.cpp)
-- [C#](交易/csharp/Demo.cs)
-- [Python](交易/python/demo.py)
-- [Java](交易/java/Demo.java)
+交易：[Python](https://thsapi.com/v2/code/trade-python.html) · [C++](https://thsapi.com/v2/code/trade-cpp.html) · [C#](https://thsapi.com/v2/code/trade-csharp.html) · [Java](https://thsapi.com/v2/code/trade-java.html)
 
-行情：
+行情：[Python](https://thsapi.com/v2/code/hq-python.html) · [C++](https://thsapi.com/v2/code/hq-cpp.html) · [C#](https://thsapi.com/v2/code/hq-csharp.html) · [Java](https://thsapi.com/v2/code/hq-java.html)
 
-- [C++](行情/cpp/Demo.cpp)
-- [C#](行情/csharp/Demo.cs)
-- [Python](行情/python/demo.py)
-- [Java](行情/java/Demo.java)
+文档：[2.0 版总览](https://thsapi.com/v2/) · [交易](https://thsapi.com/v2/trade.html) · [行情](https://thsapi.com/v2/hq.html) · [Python 快速开始](https://thsapi.com/v2/python.html)
 
-## 重要提醒
+**Tradex 版**
 
-这是给有编程基础、要把已有策略接到券商上的接口。还在找买卖点、没有准备写程序或交给 AI 改程序的，这套接口帮不上。
+交易：[C++](交易/cpp/Demo.cpp) · [C#](交易/csharp/Demo.cs) · [Python](交易/python/demo.py) · [Java](交易/java/Demo.java)
 
-授权是先付款、后开通。付款后把记录发给 [Telegram：@Thsapi](https://t.me/Thsapi)，按账户开通。服务时间周一至周六 9:00–20:00，其他时间可以在网页在线咨询里先留言。技术细节以本文为准，价格以 [官网授权方式](https://thsapi.com/#license) 为准。
+行情：[C++](行情/cpp/Demo.cpp) · [C#](行情/csharp/Demo.cs) · [Python](行情/python/demo.py) · [Java](行情/java/Demo.java)
 
-## 一、这是什么接口
-
-把交易和行情调用放进自己的程序：登录后查询资金、持仓、委托和成交，再下单、撤单。成交发生时，登录后注册 `SetPushCallback`，分笔成交会逐条回调。行情仍由程序主动查询。
-
-### （一）产品功能
-
-- 直连券商交易服务器，中间不经过客户端。支持普通账户和融资融券账户的下单、撤单、查询和成交回报，以及融资买入、融券卖出、担保品买卖、买券还券、卖券还款、直接还款和新股申购。
-- 可以单账户操作，也可以多个账户同时保持连接。同一账户有批量查询、批量下单、批量撤单；多个账户有 `QueryMultiAccountsDatas`、`SendMultiAccountsOrders`、`CancelMultiAccountsOrders`。同一个 `ClientID` 请串行调用，不同账户可以并行。
-- 交易连接有心跳，断线会重连。下单耗时主要取决于到券商的网络和券商限速。64 位大约比 32 位快 30%。
-- 交易连接上可以直接取五档快照：`GetQuote`、`GetQuotes`、`GetMultiAccountsQuotes`。独立行情库 `HqApi.dll` 提供 L1 与扩展行情。L1 是实时行情、Tick、五档和分钟 K 线；扩展行情是期货、期权等（`TdxExHq_*`）。
-- 导出函数是 `stdcall`。C++、C#、Python、Java 有现成示例；Delphi、VB、易语言按同样的函数名调用即可。
-- 信用账户登录时，在普通资金账号开头加 `X`，交易账号仍用信用资金账号。
-- 已有项目时，可以把 [AI接入提示词.md](AI接入提示词.md) 交给正在改项目的 AI，或打开 [AI 代做提示词](https://thsapi.com/ai.html)。
-
-### （二）授权
-
-授权按账户开通，不需要提供交易密码。
-
-网络授权只在登录授权时发送经过哈希处理的账号标识。授权服务器只保存这个哈希值和使用时间，不接收交易密码、持仓、委托或成交。校验通过后不再连接授权服务器，也不下发 `thsapi.lic`，程序只连接券商交易站点或行情站点。
-
-本地授权是把 `thsapi.lic` 直接放在你的电脑上，DLL 读取本地文件完成授权，不连接授权服务器。运行期间除券商交易或行情网络外，不连接其他服务。
-
-本地授权的 `thsapi.lic` 文件名和内容不可修改，否则无法登录。
-
-普通账户和信用账户是两个账户，各自授权。行情授权含 L1 与扩展行情。
-
-### （三）用户安全
-
-DLL 只在你的程序调用时工作，读不到策略源码。证券账户的银证转账受券商和银行的三方存管规则限制，资金只能在证券账户和已绑定的本人同名银行账户之间划转，不能直接转给第三方。这只说明资金去向。程序仍会执行你发出的下单指令，交易密码请自己保管，并先用模拟账户把流程跑通。
-
-可以自己核对，不必只看说明：
-
-- 用资源监视器或 `netstat` 看这个进程连了哪些地址。
-- 在 Windows 防火墙里限制程序能访问的地址，只放行券商交易或行情站点。网络授权只在登录时校验一次，不会一直连着授权服务器；本地授权本来就不连。
-- 这些检查都可以交给 AI：让它跑模拟账户、列出网络连接、写防火墙出站规则。
-- 先在单独目录里用模拟账户登录、查询、下单和撤单，再接到正式策略上。
-
-完整说明见 [账户安全与授权](https://thsapi.com/security.html)。请使用正版系统和正常安装的安全软件。破解版软件有被植入后门的风险，由此造成的损失需要自行承担。
-
-### （四）接口性能
-
-一次下单包含打包、发送、接收和解包。发送和接收的时间取决于你的网络和券商处理速度，接口改不了这段网络时间。同一账户的调用请串行。批量接口可以一次提交多笔，实际速度以券商限制为准，使用前请向券商确认允许的频率。
-
-下面是单次调用从发出到返回的往返时间，不是平均值。交易在同花顺模拟站点实测，行情在 L1 站点实测。不同网络环境、不同券商站点，速度会有差异。建议下载上面的测试包，在自己的网络里再测一次。
-
-交易接口 `thsapi.dll`：下单 `SendOrder` 45 毫秒。查询资金 `QueryData(0)` 38 毫秒，查询股份 `QueryData(1)` 40 毫秒，查询当日委托 `QueryData(2)` 36 毫秒，查询股东代码 `QueryData(5)` 42 毫秒。直连券商交易服务器，中间没有客户端和中转。券商不限速时，批量下单约 200 单/秒。成交回报由券商主动推送，不用轮询。
-
-行情接口 `HqApi.dll`：单只五档 `GetSecurityQuotes` 33 毫秒，K 线 `GetSecurityBars` 32 毫秒，分时 `GetMinuteTimeData` 33 毫秒，集合竞价 `GetCallAuctionData` 35 毫秒，板块 `ListBoards` 41 毫秒，F10 `GetCompanyInfoContent` 48 毫秒。真实环境下，一次调用批量函数拉取全市场五档，5224 只全部返回，含数据解码，185 毫秒取回。授权含 L1 与扩展行情。
-
-#### 1. 行情
-
-行情都是程序主动查询。`HqApi.dll` 连接有心跳，断了会重连。
-
-- L1：端口 `7709`，账号写成 `L1*账号`，密码用该账号的密码，不能为空。
-- 扩展行情：常见端口 `7727` / `7721`，使用 `TdxExHq_*`，连接号不要与 A 股混用。
-- 普通五档可以按主机规则多点连接。
-
-#### 2. 交易
-
-`thsapi.dll` 的调用顺序是 `Init`、`Logon`、业务函数、`Logoff`、`UnInit`。登录后可以查询资金、持仓、当日委托、当日成交、可撤单和股东代码，也可以查历史委托、历史成交、交割单和资金明细。
-
-下单用 `SendOrder`，撤单用 `CancelOrder`。需要一次提交多笔时，用 `SendOrders`、`CancelOrders`；多个账户一起提交时，用 `SendMultiAccountsOrders`、`CancelMultiAccountsOrders`。批量调用不用等上一笔返回后再发下一笔，实际成交速度仍受券商限速约束。可买可卖用 `GetTradableQuantity` 或 `GetCanBuySell`，打新用 `OneClickIpo`，场内基金和 ETF 用 `FundOrder`，信用账户直接还款用 `Repay`。
-
-通讯密码多数券商填空字符串，少数券商要填。先在 `xdDemo.exe` 里用同一组参数登录成功，再写进程序。模拟站点是 `trade.10jqka.com.cn`，端口 `8002`，营业部 `48`，`qs_id` 为 `356`。登录账号填手机号、同花顺账户或股东账户，三选一，资金账号留空。
-
-## 二、授权价格
-
-价格不写在这里，以 [官网授权方式](https://thsapi.com/#license) 为准。交易接口和行情接口都适用。付款后把记录发给 [Telegram：@Thsapi](https://t.me/Thsapi)。
-
-网络授权可以更换账户。本地授权对应具体账户，不可更改账户。行情授权含 L1 与扩展行情。Linux `.so` 和其他功能单独约定。联系 [Telegram：@Thsapi](https://t.me/Thsapi)。
-
-## 三、安装调试
-
-### （一）运行环境
+## 环境与模拟账户
 
 - Windows 10、Windows 11，或同等的 Windows Server。32 位和 64 位都可以，程序位数必须和 DLL 一致。优先使用 64 位。
 - Python、Java、C#、C/C++ 按对应位数调用。
 - `xdDemo.exe` 需要 .NET Framework 4.8，Windows 10/11 通常已经带有。
-- Linux 不在标准包内，`.so` 单独定制。
+- Linux 不在标准包内，`.so` 单独约定，见官网。
 
-### （二）获取软件
+初次使用可以先用同花顺模拟账户。登录账号填手机号、同花顺账户或股东账户，三选一，资金账号留空。通讯密码留空。先打开 `xdDemo.exe` 登录成功，再写进自己的程序。填法看 [模拟账户.md](模拟账户.md)，网页说明见 [账户怎么填](https://thsapi.com/sim.html)。
 
-试用包下载在上面的 [下载试用](#下载试用)。技术支持和开通联系 [Telegram：@Thsapi](https://t.me/Thsapi)。
+## 安全
 
-四个语言的调用代码在 [调用示例](#调用示例)。DLL 在测试包里，不在 git 仓库中。
+授权按账户开通，不需要提供交易密码。登录时只发送经过哈希处理的账号标识。授权服务器只保存这个哈希值和使用时间，不接收交易密码、持仓、委托或成交。校验通过后，程序只连接券商交易站点或行情站点。普通账户和信用账户是两个账户，各自授权。
 
-### （三）先用模拟盘
+DLL 只在程序调用时工作，读不到策略源码。银证转账受券商和银行的三方存管限制，资金只能在证券账户和已绑定的本人同名银行账户之间划转。程序仍会执行你发出的下单指令，交易密码请自己保管，并先用模拟账户把流程跑通。
 
-初次使用可以先用同花顺模拟账户。登录账号填手机号、同花顺账户或股东账户，三选一，资金账号留空。通讯密码留空。先打开 `xdDemo.exe` 登录成功，再写进自己的程序。填法看 [模拟账户.md](模拟账户.md)。
+可以自己核对：
 
-## 四、服务支持
+- 用资源监视器或 `netstat` 看这个进程连了哪些地址。
+- 在 Windows 防火墙里限制程序能访问的地址，只放行券商交易或行情站点。授权只在登录时校验一次。
+- 先在单独目录里用模拟账户登录、查询、下单和撤单，再接到正式策略上。
 
-### （一）服务承诺
+完整说明见 [账户安全与授权](https://thsapi.com/security.html)。
 
-券商协议会变化。能继续拿到相应协议时，会更新接口，保证已开通的账户可以继续使用。交易接口本身不能消除下单错误和市场风险。正式使用前，请先用模拟账户把查询、下单和撤单跑通。
+## 速度
 
-### （二）服务范围
+下面是单次调用从发出到返回的往返时间，不是平均值。交易在同花顺模拟站点实测，行情在 L1 站点实测。不同网络、不同券商站点，速度会有差异。
 
-技术支持只覆盖 `thsapi.dll`、`HqApi.dll` 和随包的演示程序，包括登录、调用参数和接口返回的错误。不负责调试你的策略逻辑，也不把远程桌面代装作为常规服务。接口自身导致的登录或调用故障，通过 Telegram 处理。
+交易接口 `thsapi.dll`：下单 `SendOrder` 45 毫秒。查询资金 `QueryData(0)` 38 毫秒，查询股份 `QueryData(1)` 40 毫秒，查询当日委托 `QueryData(2)` 36 毫秒，查询股东代码 `QueryData(5)` 42 毫秒。直连券商交易服务器，中间没有客户端。券商不限速时，批量下单约 200 单/秒。成交回报由券商主动推送。
 
-### （三）服务渠道
+行情接口 `HqApi.dll`：单只五档 `GetSecurityQuotes` 33 毫秒，K 线 `GetSecurityBars` 32 毫秒，分时 `GetMinuteTimeData` 33 毫秒，集合竞价 `GetCallAuctionData` 35 毫秒，板块 `ListBoards` 41 毫秒，F10 `GetCompanyInfoContent` 48 毫秒。一次调用批量函数拉取全市场五档，5224 只全部返回，含数据解码，185 毫秒取回。
 
-稳定联系方式是 [Telegram：@Thsapi](https://t.me/Thsapi)。没有 Telegram 时，打开 [thsapi.com](https://thsapi.com/) 使用在线咨询。
+同一账户的调用请串行。批量接口可以一次提交多笔，实际速度以券商限制为准。
 
-### （四）服务时间
-
-技术咨询、支持服务时间：周一至周六 9:00–20:00。授权购买时间：周一至周六 10:00–20:00，周日 19:00–21:00。需要在开盘前开通授权的，请提前一天晚上通过 Telegram 发送付款记录和资金账户号。
-
-## 五、常见问题
+## 常见问题
 
 **找不到 DLL。** 把 `thsapi.dll` 或 `HqApi.dll` 放在程序目录，文件名保持小写，并确认 32/64 位和程序一致。`xdDemo.exe`、`ths.xml`、`thsapi.dll` 要放在同一目录。
 
@@ -150,17 +93,17 @@ DLL 只在你的程序调用时工作，读不到策略源码。证券账户的�
 
 **Config 要写满吗。** 不用。只写 `qs_id` 和 `account_type`，空项不要写进去。
 
-**授权服务器会看到密码和持仓吗。** 不会。网络授权只上传账号哈希，服务端只保存哈希值和使用时间。本地授权不连接授权服务器。
+**授权服务器会看到密码和持仓吗。** 不会。只上传账号哈希，服务端只保存哈希值和使用时间。
 
 **资金能转到别人的账户吗。** 银证转账只能在证券账户和已绑定的本人同名银行账户之间进行。这不能代替你自己保管密码。
 
 **行情账号怎么填。** L1 写成 `L1*账号`。扩展行情用 `TdxExHq_*`。
 
-**返回乱码。** `Result` 和 `ErrInfo` 是 GBK。`Result` 以换行分行、以制表符分列。
-
----
+**返回乱码。** Tradex 版的 `Result` 和 `ErrInfo` 是 GBK；2.0 版的 Alloc 结果是 UTF-8。`Result` 以换行分行、以制表符分列。
 
 ## 接口功能概览
+
+以下接口介绍按 Tradex 版函数名书写。2.0 版的同名函数带 `Alloc` 后缀（如 `QueryDataAlloc`、`TdxHq_GetSecurityQuotesAlloc`），结果为 UTF-8，用完调用 `FreeApiBuffer` / `TdxHq_FreeBuffer`，详见 [2.0 版总览](https://thsapi.com/v2/)。
 
 | 类别 | 说明 |
 | --- | --- |
