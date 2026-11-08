@@ -23,7 +23,7 @@ pip install thsapi-2.0.0-py3-none-any.whl tdxhq-2.0.0-py3-none-any.whl
 pip install "thsapi[pandas]" "tdxhq[pandas]"
 
 # 官网 / GitHub Releases 直链亦可
-pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl
+pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl
 ```
 
 Wheel **不含** DLL。把 `thsapi.dll` / `HqApi.dll` 与 `login_prefs.json` 放在工作目录，或设环境变量 `THSAPI_DLL` / `TDXHQ_DLL`。

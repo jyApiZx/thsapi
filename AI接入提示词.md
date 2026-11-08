@@ -35,7 +35,7 @@ Python 快速开始：https://thsapi.com/python.html
 - 下载：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip （另有 x32）。文档 https://thsapi.com/trade.html ，Alloc 在 https://thsapi.com/trade.html#alloc
 
 Python 包：
-- pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl （测试包里也有 wheel）。必须用 login_from_prefs()，禁止手填 host/port/yyb/qs_id/config。登录和内存释放由包完成，底层仍是同一个 thsapi.dll。
+- pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl （测试包里也有 wheel）。必须用 login_from_prefs()，禁止手填 host/port/yyb/qs_id/config。登录和内存释放由包完成，底层仍是同一个 thsapi.dll。
 - 测试包：https://thsapi.com/downloads/thsapi_2.0.0_x64.zip （另有 x32）。说明 https://thsapi.com/python.html
 
 通用：支持所有券商实盘（普通+两融）。账户填法 https://thsapi.com/sim.html 。券商 IP、端口、营业部、qs_id 不要问我猜，用 Demo 保存的配置或包内 ths.xml。OpenTdx/Init 与 CloseTdx/UnInit 进程级各一次；同一 ClientID 串行。按字段 ID 取列（2116 可用金额、2102 代码、2106 股东、2135 合同编号）。查询成功前不要发实盘单。账号密码不要写进会提交的代码。成交推送 SetPushCallback：回调里禁止 Logoff/UnInit。不要写入内部协议或未公开细节。
@@ -53,7 +53,7 @@ Python 包：
 - 下载：https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip （另有 x32）。文档 https://thsapi.com/hq.html ，Alloc 在 https://thsapi.com/hq.html#alloc
 
 Python 包：
-- pip install https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl 。必须用 connect_from_prefs(lane="L1" 或 "Ex")。
+- pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl 。必须用 connect_from_prefs(lane="L1" 或 "Ex")。
 - 测试包：https://thsapi.com/downloads/hqapi_2.0.0_x64.zip 。说明 https://thsapi.com/python.html
 
 通用：L1 端口 7709，账号写成 L1*账号，密码非空。扩展行情常见端口 7727，账号常 KZ* 前缀。不要默认接 L2。不要写入内部协议或未公开细节。

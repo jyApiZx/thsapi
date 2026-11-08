@@ -30,7 +30,7 @@ Python 包是在同一 DLL 上多装一个 wheel，登录和释放已经包好�
 
 **Python 包 · 交易**：[64 位](https://thsapi.com/downloads/thsapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/thsapi_2.0.0_x32.zip)。**行情**：[64 位](https://thsapi.com/downloads/hqapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/hqapi_2.0.0_x32.zip)。
 
-**Python SDK**（官网 wheel，不上 PyPI）：`pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl`。见 [Python 快速开始](https://thsapi.com/python.html)。
+**Python SDK**（GitHub Release wheel，不上 PyPI）：`pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl`。见 [Python 快速开始](https://thsapi.com/python.html)。
 
 DLL 在测试包里，不在 git 仓库中。
 

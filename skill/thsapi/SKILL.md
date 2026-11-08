@@ -1,4 +1,4 @@
-﻿---
+---
 name: thsapi
 description: >-
   同花顺交易 thsapi.dll / Python thsapi，以及通达信行情 HqApi.dll / Python tdxhq。
@@ -40,7 +40,7 @@ pip install thsapi-2.0.0-py3-none-any.whl
 pip install tdxhq-2.0.0-py3-none-any.whl
 
 # 或官网直链：
-pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl
+pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl
 ```
 
 Wheel **不含** DLL。把 `thsapi.dll` / `HqApi.dll` 与 `login_prefs.json` 放在工作目录，或设置 `THSAPI_DLL` / `TDXHQ_DLL`。
