@@ -1,0 +1,17 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+publish/
+artifacts/
+*.log
+.DS_Store
+Thumbs.db
+appsettings.local.json
+*.lic
+login_prefs.json
+.idea/
+TradeMcp.slnx
+*.DotSettings.user
+
