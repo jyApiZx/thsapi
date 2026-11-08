@@ -32,11 +32,11 @@ Python 快速开始：https://thsapi.com/python.html
 - 不想预分配缓冲区时，用 QueryDataAlloc、SendOrderExAlloc 等 Alloc 函数。结果是 UTF-8，用完必须 FreeApiBuffer，不要用 free，也不要释放两次。
 - 登录参数从 xdDemo.exe 生成的 login_prefs.json 读取，不要手填 IP、端口、营业部、qs_id。两融账户（isCredit 为 true）登录账号前加 X。
 - 缺 login_prefs.json 时，先让我运行测试包里的 xdDemo.exe，登录我自己的券商或模拟盘一次（成功会自动保存）。
-- 下载：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip （另有 x32）。文档 https://thsapi.com/trade.html ，Alloc 在 https://thsapi.com/trade.html#alloc
+- 下载同花顺交易接口测试包：https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip （另有 x32）。文档 https://thsapi.com/trade.html ，Alloc 在 https://thsapi.com/trade.html#alloc ，产品指引 https://thsapi.com/guide.html
 
 Python 包：
-- pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl （测试包里也有 wheel）。必须用 login_from_prefs()，禁止手填 host/port/yyb/qs_id/config。登录和内存释放由包完成，底层仍是同一个 thsapi.dll。
-- 测试包：https://thsapi.com/downloads/thsapi_2.0.0_x64.zip （另有 x32）。说明 https://thsapi.com/python.html
+- 命令安装：pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl 。也可先下载该 wheel 再 pip install 本地文件。必须用 login_from_prefs()，禁止手填 host/port/yyb/qs_id/config。登录和内存释放由包完成，底层仍是同一个 thsapi.dll。
+- 说明 https://thsapi.com/python.html
 
 通用：支持所有券商实盘（普通+两融）。账户填法 https://thsapi.com/sim.html 。券商 IP、端口、营业部、qs_id 不要问我猜，用 Demo 保存的配置或包内 ths.xml。OpenTdx/Init 与 CloseTdx/UnInit 进程级各一次；同一 ClientID 串行。按字段 ID 取列（2116 可用金额、2102 代码、2106 股东、2135 合同编号）。查询成功前不要发实盘单。账号密码不要写进会提交的代码。成交推送 SetPushCallback：回调里禁止 Logoff/UnInit。不要写入内部协议或未公开细节。
 ```
@@ -50,11 +50,11 @@ Python 包：
 - 常用函数是 TdxHq_Connect、TdxHq_GetSecurityQuotes。结果是 GBK，由调用方预分配缓冲区。
 - 不想预分配缓冲区时，用 TdxHq_*Alloc / TdxExHq_*Alloc。结果是 UTF-8，用完必须 TdxHq_FreeBuffer。
 - 连接参数从「行情测试demo.exe」生成的 login_prefs.json 读取。缺文件时，先让我用 Demo 连接成功一次。
-- 下载：https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip （另有 x32）。文档 https://thsapi.com/hq.html ，Alloc 在 https://thsapi.com/hq.html#alloc
+- 下载通达信行情接口测试包：https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip （另有 x32）。文档 https://thsapi.com/hq.html ，Alloc 在 https://thsapi.com/hq.html#alloc
 
 Python 包：
-- pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl 。必须用 connect_from_prefs(lane="L1" 或 "Ex")。
-- 测试包：https://thsapi.com/downloads/hqapi_2.0.0_x64.zip 。说明 https://thsapi.com/python.html
+- 命令安装：pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl 。也可先下载该 wheel 再 pip install 本地文件。必须用 connect_from_prefs(lane="L1" 或 "Ex")。
+- 说明 https://thsapi.com/python.html
 
 通用：L1 端口 7709，账号写成 L1*账号，密码非空。扩展行情常见端口 7727，账号常 KZ* 前缀。不要默认接 L2。不要写入内部协议或未公开细节。
 ```

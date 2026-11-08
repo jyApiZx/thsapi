@@ -1,13 +1,13 @@
-# thsapi MCP
+# thsapi MCP 托管
 
-把 **同花顺交易接口（thsapi.dll）** 和 **通达信行情接口（HqApi.dll）** 封装成两个本地 MCP 服务，让支持 MCP 的 AI 客户端直接查持仓、看行情、下单。
+把 **同花顺交易接口（thsapi.dll）** 和 **通达信行情接口（HqApi.dll）** 封装成两个本地 MCP 服务（MCP 托管），让支持 MCP 的 AI 客户端直接查持仓、看行情、下单。
 
 ```text
 AI 客户端  --MCP（stdio）-->  TradeMcp.Trading.exe  -->  thsapi.dll
 AI 客户端  --MCP（stdio）-->  TradeMcp.Quotes.exe   -->  HqApi.dll
 ```
 
-本目录只有 MCP 外壳的源码。`thsapi.dll`、`HqApi.dll` 是商业库，不在仓库里，请从官网下载测试包：<https://thsapi.com/python.html>。使用说明：<https://thsapi.com/mcp.html>。
+本目录只有 MCP 外壳的源码。`thsapi.dll`、`HqApi.dll` 是商业库，不在仓库里；请从 GitHub Release / 官网下载同花顺交易接口与通达信行情接口测试包：<https://thsapi.com/#get>。Python 包见 <https://thsapi.com/python.html>。使用说明：<https://thsapi.com/mcp.html>。
 
 ## 支持范围
 

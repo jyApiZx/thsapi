@@ -8,9 +8,12 @@ description: >-
 # thsapi / tdxhq Skill
 
 官网：https://thsapi.com/  
-交易文档：https://thsapi.com/trade.html （Alloc：https://thsapi.com/trade.html#alloc ）  
-行情文档：https://thsapi.com/hq.html （Alloc：https://thsapi.com/hq.html#alloc ）  
+产品指引：https://thsapi.com/guide.html  
+交易文档（同花顺交易接口）：https://thsapi.com/trade.html （Alloc：https://thsapi.com/trade.html#alloc ）  
+行情文档（通达信行情接口）：https://thsapi.com/hq.html （Alloc：https://thsapi.com/hq.html#alloc ）  
 Python 包：https://thsapi.com/python.html  
+MCP 托管：https://thsapi.com/mcp.html  
+软件安全核验：https://thsapi.com/security.html  
 本 Skill 包：https://thsapi.com/skill/thsapi-skill.zip
 
 ## 硬性规则（先读）
@@ -39,11 +42,15 @@ Python 包：https://thsapi.com/python.html
 pip install thsapi-2.0.0-py3-none-any.whl
 pip install tdxhq-2.0.0-py3-none-any.whl
 
-# 或官网直链：
+# 或 GitHub Release 命令安装：
 pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl
+
+# 也可先下载再装：
+# https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl
+# https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl
 ```
 
-Wheel **不含** DLL。把 `thsapi.dll` / `HqApi.dll` 与 `login_prefs.json` 放在工作目录，或设置 `THSAPI_DLL` / `TDXHQ_DLL`。
+Wheel **不含** DLL。先下交易 / 行情测试包（同花顺交易接口 `thsapi.dll`、通达信行情接口 `HqApi.dll`），把 DLL 与 `login_prefs.json` 放在工作目录，或设置 `THSAPI_DLL` / `TDXHQ_DLL`。
 
 ## Python 交易最小模板
 
@@ -79,9 +86,9 @@ api.disconnect()
 - 登录都用 `Logon`。券商 IP、端口、营业部、`qs_id` 用 Demo 保存的配置或测试包 `ths.xml`，不要问用户猜。
 - 模拟盘：`trade.10jqka.com.cn:8002`，营业部 `48`，`{"qs_id":356,"account_type":0}`；登录账号填手机号/同花顺账户/股东账户，资金账号留空。账户填法见 https://thsapi.com/sim.html
 
-## 不写代码：MCP
+## 不写代码：MCP 托管
 
-用户只想让 AI 直接查持仓、看行情、下单，不需要自己的程序时，推荐 MCP：把 `TradeMcp.Trading.exe` / `TradeMcp.Quotes.exe` 放进测试包目录（仅 64 位），在 AI 客户端添加为 stdio MCP 服务，登录调用 `trade_logon_from_prefs`。下单默认关闭，需 `TRADE_MCP_TRADING_ENABLED=1`，且每笔 prepare + confirm。说明见 https://thsapi.com/mcp.html
+用户只想让 AI 直接查持仓、看行情、下单（同花顺交易接口 + 通达信行情接口），不需要自己的程序时，推荐 **MCP 托管**：把 `TradeMcp.Trading.exe` / `TradeMcp.Quotes.exe` 放进测试包目录（仅 64 位），在 AI 客户端添加为 stdio MCP 服务，登录调用 `trade_logon_from_prefs`。下单默认关闭，需 `TRADE_MCP_TRADING_ENABLED=1`，且每笔 prepare + confirm。说明见 https://thsapi.com/mcp.html
 
 ## 生成代码时
 

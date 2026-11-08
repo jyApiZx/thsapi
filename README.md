@@ -1,38 +1,53 @@
 # 同花顺交易接口与通达信行情接口
 
-同花顺交易接口、通达信交易接口和通达信行情接口（thsapi / tdxapi）。交易库 `thsapi.dll` 直接连接券商，不用打开同花顺客户端。行情库 `HqApi.dll` 走通达信行情协议，A 股用 `TdxHq_*`，期货等扩展行情用 `TdxExHq_*`。Python、C++、C#、Java 都可以接，32 位和 64 位都有，程序位数要和 DLL 一致。
+**同花顺交易接口、通达信交易接口、通达信行情接口**（thsapi / tdxapi）。交易库 `thsapi.dll` 是同花顺交易接口，直接连接券商交易服务器，不用打开同花顺客户端，支持所有券商实盘（普通账户与融资融券）。行情库 `HqApi.dll` 是通达信行情接口，走通达信行情协议：A 股用 `TdxHq_*`，期货、美股、港股等扩展行情用 `TdxExHq_*`。股票交易 API / 量化交易接口可接 Python、C++、C#、Java，32 位和 64 位都有，程序位数要和 DLL 一致。
 
-产品说明见 [thsapi.com](https://thsapi.com/)。联系 [Telegram：@Thsapi](https://t.me/Thsapi)。授权与价格见 [官网](https://thsapi.com/#license)。
+官网与产品指引：[thsapi.com](https://thsapi.com/) · [产品指引](https://thsapi.com/guide.html) · [软件安全核验](https://thsapi.com/security.html) · [授权价格](https://thsapi.com/#license)。联系 [Telegram：@Thsapi](https://t.me/Thsapi)。
 
 ## 功能
 
-- 登录后查询资金、持仓、委托和成交，再下单、撤单。成交通过 `SetPushCallback` 推送，不用轮询。
-- 支持融资融券、新股申购、场内基金和银证转账。
-- 可以单账户操作，也可以多个账户同时在线。同一账户可以批量查询、下单和撤单。
-- 行情提供 L1 五档、Tick、分时和 K 线，扩展行情包括期货等。交易连接上也可以取五档快照。
+- 同花顺交易接口：登录后查询资金、持仓、委托和成交，再下单、撤单。成交通过 `SetPushCallback` 推送，不用轮询。
+- 支持融资融券、新股申购、场内基金和银证转账；单账户或多账户同时在线；同一账户可批量查询、下单和撤单。
+- 通达信行情接口：L1 五档、Tick、分时和 K 线；扩展行情含美股、港股、期货等。交易连接上也可以取五档快照。
+- 常用导出：`Logon`、`QueryData`、`SendOrder`。结果为 GBK，由调用方预分配缓冲区。带 `Alloc` 后缀的函数结果为 UTF-8，用完必须释放，见 [交易文档](https://thsapi.com/trade.html#alloc) · [行情文档](https://thsapi.com/hq.html#alloc)。
+- Python 包（`thsapi` / `tdxhq`）在同一 DLL 上封装登录和释放，见 [Python 快速开始](https://thsapi.com/python.html)。
+- **MCP 托管**：把同花顺交易接口与通达信行情接口交给常用 AI 客户端，用一句话查持仓、看行情、下单。下单默认关闭，每笔先预览、确认后才提交。说明见 [MCP 托管](https://thsapi.com/mcp.html)。
 
-结果为 GBK，由调用方预分配缓冲区。调用 `Logon`、`QueryData`、`SendOrder`。
-
-Python 包是在同一 DLL 上多装一个 wheel，登录和释放已经包好。见 [Python 快速开始](https://thsapi.com/python.html)。带 `Alloc` 后缀的函数不用预分配缓冲区，结果是 UTF-8，用完必须释放，写在同一份 [交易文档](https://thsapi.com/trade.html#alloc) 里。
-
-也可以通过 MCP，让常用 AI 客户端查持仓、看行情、下单。下单默认关闭，每笔先预览，确认后才提交。
-
-这是把已有策略接到券商上的接口。
+这是把已有策略接到券商上的同花顺交易接口 / 通达信行情接口。
 
 ## 下载
 
-文档各一份。直接调用 DLL，或给 Python 再装一个包。
+测试包在 GitHub Release（与官网首页一致）。DLL 不在 git 仓库里。
 
-- **原生 DLL**：`Logon`、`QueryData`、`SendOrder`。结果为 GBK，调用方预分配缓冲区。同一 DLL 的 Alloc 函数见 [交易文档](https://thsapi.com/trade.html#alloc)、[行情文档](https://thsapi.com/hq.html#alloc)。
-- **Python 包**：`pip install` 一个 wheel，登录和内存释放已经包好。见 [Python 快速开始](https://thsapi.com/python.html)。
+### 交易 DLL（同花顺交易接口 `thsapi.dll`）
 
-**交易 1.0.7.13**：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)。稳定版 1.0.7.12：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)。行情 1.0.7.0：[64 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip)。
+包内是 `thsapi.dll`、`xdDemo.exe`。位数与程序一致，优先 64 位。
 
-**Python 包 · 交易**：[64 位](https://thsapi.com/downloads/thsapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/thsapi_2.0.0_x32.zip)。**行情**：[64 位](https://thsapi.com/downloads/hqapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/hqapi_2.0.0_x32.zip)。
+- 最新版 1.0.7.13：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)
+- 稳定版 1.0.7.12：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)
 
-**Python SDK**（GitHub Release wheel，不上 PyPI）：`pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl`。见 [Python 快速开始](https://thsapi.com/python.html)。
+### 行情 DLL（通达信行情接口 `HqApi.dll`）
 
-DLL 在测试包里，不在 git 仓库中。
+L1 端口 7709，账号写成 `L1*账号`。含扩展行情（美股、港股、期货）。
+
+- 1.0.7.0：[64 位（推荐）](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip)
+
+### Python 包
+
+先下载上面的交易 / 行情测试包，用 Demo 登录一次自己的券商；再装 wheel（不上 PyPI）。
+
+**方式一：命令安装**
+
+```bash
+pip install https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl
+```
+
+**方式二：下载安装**
+
+- [下载 thsapi](https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/thsapi-2.0.0-py3-none-any.whl)
+- [下载 tdxhq](https://github.com/jyApiZx/thsapi/releases/download/python-2.0.0/tdxhq-2.0.0-py3-none-any.whl)
+
+下载后在文件所在目录执行：`pip install thsapi-2.0.0-py3-none-any.whl tdxhq-2.0.0-py3-none-any.whl`。必须用 `login_from_prefs()` / `connect_from_prefs()`。详见 [Python 快速开始](https://thsapi.com/python.html)。
 
 ## 调用示例
 
@@ -40,7 +55,7 @@ DLL 在测试包里，不在 git 仓库中。
 
 本仓库源码：交易 [C++](交易/cpp/Demo.cpp) · [C#](交易/csharp/Demo.cs) · [Python](交易/python/demo.py) · [Java](交易/java/Demo.java)。行情 [C++](行情/cpp/Demo.cpp) · [C#](行情/csharp/Demo.cs) · [Python](行情/python/demo.py) · [Java](行情/java/Demo.java)。
 
-文档：[交易](https://thsapi.com/trade.html) · [行情](https://thsapi.com/hq.html) · [Python 包](https://thsapi.com/python.html)
+文档：[同花顺交易接口](https://thsapi.com/trade.html) · [通达信行情接口](https://thsapi.com/hq.html) · [Python 包](https://thsapi.com/python.html) · [产品指引](https://thsapi.com/guide.html) · [MCP 托管](https://thsapi.com/mcp.html) · [软件安全核验](https://thsapi.com/security.html)
 
 ## 环境与模拟账户
 
@@ -63,7 +78,7 @@ DLL 只在程序调用时工作，读不到策略源码。银证转账受券商�
 - 在 Windows 防火墙里限制程序能访问的地址，只放行券商交易或行情站点。授权只在登录时校验一次。
 - 先在单独目录里用模拟账户登录、查询、下单和撤单，再接到正式策略上。
 
-完整说明见 [账户安全与授权](https://thsapi.com/security.html)。
+完整说明见 [软件安全核验 / 账户安全与授权](https://thsapi.com/security.html)。
 
 ## 速度
 
