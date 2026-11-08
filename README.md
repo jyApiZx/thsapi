@@ -103,4 +103,4 @@ C++、C#、Java 同样支持，示例在 `交易/`、`行情/` 目录。
 
 **登录失败。** 先用测试包里的 `xdDemo.exe`（交易）或行情 Demo 登录一次自己的券商或模拟盘，成功后再跑自己的程序。
 
-联系 [Telegram：@Thsapi](https://t.me/Thsapi)。模拟账户填法见 [模拟账户.md](模拟账户.md)。
+联系 [Telegram：@Thsapi](https://t.me/Thsapi)。账户怎么填分三种：普通账户、信用账户（融资融券）、同花顺模拟账户，见 [账户怎么填](https://thsapi.com/sim.html)，仓库里也有 [模拟账户.md](模拟账户.md)。
