@@ -1,54 +1,60 @@
-# 交给 AI
+# Skill（原「AI 接入提示词」）
 
-复制下面整段，贴给正在改你项目的 AI。它会先问几个问题，你回答完，它再改代码。
+优先使用 **Skill 包**（含交易、行情和 Python 包的参考文档），比单段提示词更稳。
 
-初次使用，如果对产品还有疑虑，可以用同花顺模拟账户测试。登录账号填手机号、同花顺账户或股东账户，三选一，资金账号留空。填法看 [模拟账户.md](模拟账户.md)。
+## 方式一：安装 Skill（推荐）
 
-## 交易
+1. 下载 [thsapi-skill.zip](https://thsapi.com/skill/thsapi-skill.zip)（本仓库对应目录：`skill/thsapi/`）。
+2. 解压成名为 `thsapi` 的文件夹，导入到你正在用的 AI（豆包、DeepSeek Harness、WorkBuddy 等）的「技能 / Skill」目录；具体路径以各产品说明为准。
+3. 对话里提到交易/行情接入时，助手应自动带上本 Skill。
+
+Skill 内文件：
+
+- `SKILL.md` — 硬性规则与最小模板
+- `references/python-sdk.md` — `thsapi` / `tdxhq` 全量方法与枚举
+- `references/trade-v2-and-classic.md` — 交易接口：原函数与 Alloc
+- `references/hq-v2-and-classic.md` — 行情接口：原函数与 Alloc
+
+网页说明：https://thsapi.com/ai.html  
+Python 快速开始：https://thsapi.com/python.html
+
+## 方式二：一键复制给 AI
+
+初次使用可用同花顺模拟账户：登录账号填手机号、同花顺账户或股东账户，三选一，资金账号留空。见 [模拟账户.md](模拟账户.md)。写完代码后，在 `xdDemo.exe` 里登录一次自己的券商即可。
+
+### 交易
 
 ```text
-你在帮我把现有项目接到 thsapi.dll。先问我下面这些问题，我回答完再改代码。不要一次改很多无关的东西。
+你在帮我把项目接到 thsapi（同花顺交易接口）。先问清：直接调用 DLL，还是安装 Python 包；语言（C++/C#/Python/Java）；程序位数（优先 64 位）；券商；是否两融账户；要不要行情。我回答完再改代码。不要一次改很多无关的东西。
 
-项目和示例在 https://github.com/jyApiZx/stockapi 。交易测试包可用最新版 1.0.7.13 或稳定版 1.0.7.12，里面是 thsapi.dll、xdDemo.exe 和 ths.xml。最新 64 位：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip ；最新 32 位：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip 。稳定 64 位：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip ；稳定 32 位：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip 。能用 64 位就用 64 位。模拟账户怎么填：https://thsapi.com/sim.html 。
+直接调用 DLL（C++ / C# / Java，或 Python ctypes）：
+- 常用函数是 Logon、QueryData、SendOrder。结果是 GBK，由调用方预分配缓冲区（Result 约 1MB，ErrInfo 256）。
+- 不想预分配缓冲区时，用 QueryDataAlloc、SendOrderExAlloc 等 Alloc 函数。结果是 UTF-8，用完必须 FreeApiBuffer，不要用 free，也不要释放两次。
+- 登录参数从 xdDemo.exe 生成的 login_prefs.json 读取，不要手填 IP、端口、营业部、qs_id。两融账户（isCredit 为 true）登录账号前加 X。
+- 缺 login_prefs.json 时，先让我运行测试包里的 xdDemo.exe，登录我自己的券商或模拟盘一次（成功会自动保存）。
+- 下载：https://github.com/jyApiZx/stockapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip （另有 x32）。文档 https://thsapi.com/trade.html ，Alloc 在 https://thsapi.com/trade.html#alloc
 
-先问：
-1. 项目是 C++、C#、Python 还是 Java？程序是不是 64 位？能用 64 位就用 64 位。32 位程序只能配 32 位 DLL。Python 先看本机 Python 是不是 64 位。
-2. 我用的哪家券商？是不是信用账户？
-3. 要不要接行情？我如果已经有行情，而且稳定，就不要换成这份。没有，或者现在的行情不稳定，再用 HqApi.dll。
+Python 包：
+- pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl （测试包里也有 wheel）。必须用 login_from_prefs()，禁止手填 host/port/yyb/qs_id/config。登录和内存释放由包完成，底层仍是同一个 thsapi.dll。
+- 测试包：https://thsapi.com/downloads/thsapi_2.0.0_x64.zip （另有 x32）。说明 https://thsapi.com/python.html
 
-登录不要问我券商 IP、端口、营业部、qs_id。这些到我下载包里的 ths.xml，按券商名字查。模拟炒股是 qs_id 356，地址 trade.10jqka.com.cn，端口 8002，营业部 48。
-
-登录规则：
-- 模拟炒股：登录账号填手机号、同花顺账户或股东账户，三选一。资金账号留空。通讯密码留空。填法见 https://thsapi.com/sim.html 。
-- 大多数券商只要资金账号和交易密码。account_type 用 0。交易账号和通讯密码都传空字符串 ""。
-- 华泰证券要客户号。资金账号一般和客户号相同。通讯密码和交易密码都要填。account_type 用 "k"。
-- 信用账户：登录账号在普通资金账号开头加大写 X。资金账号填信用资金账号，不要加 X。普通账户不要加 X。
-
-程序旁边放 thsapi.dll 就行，位数要和程序一样。只支持 Windows。ths.xml 只用来查券商，不必打进程序。
-
-Init 和 UnInit 整个进程只调用一次。可以登录多个账户，每个账户一个 ClientID，用完各自 Logoff。同一个 ClientID 不要多线程一起调用。
-
-查询前调用 EnableResultColumnIdSuffix(1)，按字段 ID 取列，不要按中文列名。常用：2112 资金余额，2116 可用金额，2102 证券代码，2106 股东代码，2135 委托编号。下单前要有股东代码。撤单要用委托编号。
-
-普通账户只查资金、持仓、当日委托、当日成交、可撤单、股东代码。两融和新股先别调。中文结果是 GBK，不是 UTF-8。Result 开 1MB，ErrInfo 开 256 字节。登录失败先看 ErrInfo。
-
-成交回报：登录成功后调用 SetPushCallback 注册一次。回调文本是 GBK，第一行表头，第二行一条记录。状态会出现「部分成交」「全部成交」，也可能是数字，不要只认「已成」。回调返回前把内容拷走。不要在回调里 Logoff 或 UnInit。字段和注意事项以 README、https://thsapi.com/trade.html 为准。
-
-查询成功之前不要发实盘单。账号和密码不要写进会提交的代码。其余接口去读 https://github.com/jyApiZx/stockapi 的 README、交易目录里的示例，以及 https://thsapi.com/trade.html ，不要凭记忆编参数。我还没有项目时，再按示例新写一份。
+通用：支持所有券商实盘（普通+两融）。账户填法 https://thsapi.com/sim.html 。券商 IP、端口、营业部、qs_id 不要问我猜，用 Demo 保存的配置或包内 ths.xml。OpenTdx/Init 与 CloseTdx/UnInit 进程级各一次；同一 ClientID 串行。按字段 ID 取列（2116 可用金额、2102 代码、2106 股东、2135 合同编号）。查询成功前不要发实盘单。账号密码不要写进会提交的代码。成交推送 SetPushCallback：回调里禁止 Logoff/UnInit。不要写入内部协议或未公开细节。
 ```
 
-## 行情
+### 行情
 
 ```text
-你在帮我把现有项目接到 HqApi.dll。先问我项目是 C++、C#、Python 还是 Java，程序是不是 64 位。能用 64 位就用 64 位。32 位程序只能配 32 位 DLL。我回答完再改代码。
+你在帮我把项目接到 HqApi.dll（通达信行情接口）。先问清：直接调用 DLL，还是安装 Python 包；语言；程序位数（优先 64 位）。我回答完再改代码。
 
-项目和示例在 https://github.com/jyApiZx/stockapi 。行情包里面是 HqApi.dll 和演示程序。64 位：https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip 。32 位：https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip 。能用 64 位就用 64 位。
+直接调用 DLL：
+- 常用函数是 TdxHq_Connect、TdxHq_GetSecurityQuotes。结果是 GBK，由调用方预分配缓冲区。
+- 不想预分配缓冲区时，用 TdxHq_*Alloc / TdxExHq_*Alloc。结果是 UTF-8，用完必须 TdxHq_FreeBuffer。
+- 连接参数从「行情测试demo.exe」生成的 login_prefs.json 读取。缺文件时，先让我用 Demo 连接成功一次。
+- 下载：https://github.com/jyApiZx/stockapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip （另有 x32）。文档 https://thsapi.com/hq.html ，Alloc 在 https://thsapi.com/hq.html#alloc
 
-只支持 Windows。程序旁边放 HqApi.dll，位数要和程序一样。授权含 L1 与扩展行情。L1 能取实时行情、Tick、买卖五档，以及一分钟、五分钟 K 线。扩展行情用 TdxExHq_*，常见端口 7727 / 7721。
+Python 包：
+- pip install https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl 。必须用 connect_from_prefs(lane="L1" 或 "Ex")。
+- 测试包：https://thsapi.com/downloads/hqapi_2.0.0_x64.zip 。说明 https://thsapi.com/python.html
 
-L1 连 7709，账号写成 L1*账号，不能用 guest，也不能空着。密码填该账号的密码，不能是空串。不要接 L2，也不要按 L2 去配账号。
-
-行情站点用仓库 行情/cpp/Demo.cpp 里的主站列表。A 股的连接号不要拿去调扩展行情。中文结果是 GBK。Result 开 1MB，ErrInfo 开 256 字节。
-
-其余参数去读 https://github.com/jyApiZx/stockapi 里 行情 目录的示例和 https://thsapi.com/hq.html ，不要凭记忆编接口。我还没有项目时，再按示例新写一份。
+通用：L1 端口 7709，账号写成 L1*账号，密码非空。扩展行情常见端口 7727，账号常 KZ* 前缀。不要默认接 L2。不要写入内部协议或未公开细节。
 ```

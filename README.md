@@ -11,9 +11,9 @@
 - 可以单账户操作，也可以多个账户同时在线。同一账户可以批量查询、下单和撤单。
 - 行情提供 L1 五档、Tick、分时和 K 线，扩展行情包括期货等。交易连接上也可以取五档快照。
 
-2.0 版结果为 UTF-8，由 DLL 分配内存，不用预分配缓冲区。先用 Demo 登录一次，代码里不用填 IP、端口和营业部。
+结果为 GBK，由调用方预分配缓冲区。调用 `Logon`、`QueryData`、`SendOrder`。
 
-Tradex 版函数名和调用方式与老版一致（`Logon`、`QueryData`、`SendOrder`），直接替换 DLL。
+Python 包是在同一 DLL 上多装一个 wheel，登录和释放已经包好。见 [Python 快速开始](https://thsapi.com/python.html)。带 `Alloc` 后缀的函数不用预分配缓冲区，结果是 UTF-8，用完必须释放，写在同一份 [交易文档](https://thsapi.com/trade.html#alloc) 里。
 
 也可以通过 MCP，让常用 AI 客户端查持仓、看行情、下单。下单默认关闭，每笔先预览，确认后才提交。
 
@@ -21,36 +21,26 @@ Tradex 版函数名和调用方式与老版一致（`Logon`、`QueryData`、`Sen
 
 ## 下载
 
-接口分两版，文档和示例各自独立：
+文档各一份。直接调用 DLL，或给 Python 再装一个包。
 
-- **新用户用 2.0 版**：结果为 UTF-8，由 DLL 分配内存，不用预分配缓冲区；先用 Demo 登录一次生成 `login_prefs.json`，代码里不用填 IP、端口、营业部。文档见 [2.0 版总览](https://thsapi.com/v2/)。
-- **老用户用 Tradex 版**：函数名和调用方式与老版 Tradex 一致（`Logon`、`QueryData`、`SendOrder`），直接替换 DLL。文档见 [Tradex 版交易](https://thsapi.com/trade.html)、[Tradex 版行情](https://thsapi.com/hq.html)。
+- **原生 DLL**：`Logon`、`QueryData`、`SendOrder`。结果为 GBK，调用方预分配缓冲区。同一 DLL 的 Alloc 函数见 [交易文档](https://thsapi.com/trade.html#alloc)、[行情文档](https://thsapi.com/hq.html#alloc)。
+- **Python 包**：`pip install` 一个 wheel，登录和内存释放已经包好。见 [Python 快速开始](https://thsapi.com/python.html)。
 
-**2.0 版 · 交易 2.0.0**：[64 位](https://thsapi.com/downloads/thsapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/thsapi_2.0.0_x32.zip)。包内 `thsapi.dll`、`xdDemo.exe`、Python / C++ / C# / Java 示例、Python wheel 与 Skill。
+**交易 1.0.7.13**：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)。稳定版 1.0.7.12：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)。行情 1.0.7.0：[64 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip)。
 
-**2.0 版 · 行情 2.0.0**：[64 位](https://thsapi.com/downloads/hqapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/hqapi_2.0.0_x32.zip)。同样含四种语言示例。
+**Python 包 · 交易**：[64 位](https://thsapi.com/downloads/thsapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/thsapi_2.0.0_x32.zip)。**行情**：[64 位](https://thsapi.com/downloads/hqapi_2.0.0_x64.zip)、[32 位](https://thsapi.com/downloads/hqapi_2.0.0_x32.zip)。
 
-**2.0 版 · Python SDK**（官网 wheel，不上 PyPI）：`pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl`。见 [Python 快速开始](https://thsapi.com/v2/python.html)。
-
-**Tradex 版**：交易 1.0.7.13（[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)），稳定版 1.0.7.12（[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)）。行情 1.0.7.0：[64 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x64.zip)、[32 位](https://github.com/jyApiZx/thsapi/releases/download/hqapi-1.0.7.0/hqapi_1.0.7.0_x32.zip)。
+**Python SDK**（官网 wheel，不上 PyPI）：`pip install https://thsapi.com/whl/thsapi-2.0.0-py3-none-any.whl https://thsapi.com/whl/tdxhq-2.0.0-py3-none-any.whl`。见 [Python 快速开始](https://thsapi.com/python.html)。
 
 DLL 在测试包里，不在 git 仓库中。
 
 ## 调用示例
 
-**2.0 版**（先用 Demo 登录一次，示例会读取 `login_prefs.json`）
+网页示例：交易 [Python](https://thsapi.com/交易/Python3.html) · [C++](https://thsapi.com/交易/C++.html) · [C#](https://thsapi.com/交易/Csharp.html) · [Java](https://thsapi.com/交易/JAVA.html)。行情 [Python](https://thsapi.com/行情/Python3.html) · [C++](https://thsapi.com/行情/C++.html) · [C#](https://thsapi.com/行情/Csharp.html) · [Java](https://thsapi.com/行情/JAVA.html)。
 
-交易：[Python](https://thsapi.com/v2/code/trade-python.html) · [C++](https://thsapi.com/v2/code/trade-cpp.html) · [C#](https://thsapi.com/v2/code/trade-csharp.html) · [Java](https://thsapi.com/v2/code/trade-java.html)
+本仓库源码：交易 [C++](交易/cpp/Demo.cpp) · [C#](交易/csharp/Demo.cs) · [Python](交易/python/demo.py) · [Java](交易/java/Demo.java)。行情 [C++](行情/cpp/Demo.cpp) · [C#](行情/csharp/Demo.cs) · [Python](行情/python/demo.py) · [Java](行情/java/Demo.java)。
 
-行情：[Python](https://thsapi.com/v2/code/hq-python.html) · [C++](https://thsapi.com/v2/code/hq-cpp.html) · [C#](https://thsapi.com/v2/code/hq-csharp.html) · [Java](https://thsapi.com/v2/code/hq-java.html)
-
-文档：[2.0 版总览](https://thsapi.com/v2/) · [交易](https://thsapi.com/v2/trade.html) · [行情](https://thsapi.com/v2/hq.html) · [Python 快速开始](https://thsapi.com/v2/python.html)
-
-**Tradex 版**
-
-交易：[C++](交易/cpp/Demo.cpp) · [C#](交易/csharp/Demo.cs) · [Python](交易/python/demo.py) · [Java](交易/java/Demo.java)
-
-行情：[C++](行情/cpp/Demo.cpp) · [C#](行情/csharp/Demo.cs) · [Python](行情/python/demo.py) · [Java](行情/java/Demo.java)
+文档：[交易](https://thsapi.com/trade.html) · [行情](https://thsapi.com/hq.html) · [Python 包](https://thsapi.com/python.html)
 
 ## 环境与模拟账户
 
@@ -99,11 +89,11 @@ DLL 只在程序调用时工作，读不到策略源码。银证转账受券商�
 
 **行情账号怎么填。** L1 写成 `L1*账号`。扩展行情用 `TdxExHq_*`。
 
-**返回乱码。** Tradex 版的 `Result` 和 `ErrInfo` 是 GBK；2.0 版的 Alloc 结果是 UTF-8。`Result` 以换行分行、以制表符分列。
+**返回乱码。** 原函数的 `Result` 和 `ErrInfo` 是 GBK；Alloc 函数的结果是 UTF-8。`Result` 以换行分行、以制表符分列。
 
 ## 接口功能概览
 
-以下接口介绍按 Tradex 版函数名书写。2.0 版的同名函数带 `Alloc` 后缀（如 `QueryDataAlloc`、`TdxHq_GetSecurityQuotesAlloc`），结果为 UTF-8，用完调用 `FreeApiBuffer` / `TdxHq_FreeBuffer`，详见 [2.0 版总览](https://thsapi.com/v2/)。
+以下接口介绍按原函数名书写。同名的 Alloc 函数（如 `QueryDataAlloc`、`TdxHq_GetSecurityQuotesAlloc`），结果为 UTF-8，用完调用 `FreeApiBuffer` / `TdxHq_FreeBuffer`，详见 [交易文档](https://thsapi.com/trade.html#alloc) 和 [行情文档](https://thsapi.com/hq.html#alloc)。
 
 | 类别 | 说明 |
 | --- | --- |
