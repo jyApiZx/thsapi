@@ -7,7 +7,7 @@ AI 客户端  --MCP（stdio）-->  TradeMcp.Trading.exe  -->  thsapi.dll
 AI 客户端  --MCP（stdio）-->  TradeMcp.Quotes.exe   -->  HqApi.dll
 ```
 
-本目录只有 MCP 外壳的源码。`thsapi.dll`、`HqApi.dll` 是商业库，不在仓库里；请从 GitHub Release / 官网下载同花顺交易接口与通达信行情接口测试包：<https://thsapi.com/#get>。Python 包见 <https://thsapi.com/python.html>。使用说明：<https://thsapi.com/mcp.html>。
+`thsapi.dll`、`HqApi.dll` 不在仓库里。请下载同花顺交易接口与通达信行情接口测试包：<https://thsapi.com/#get>。MCP 程序从官网下载：<https://thsapi.com/mcp.html>。Python 包见 <https://thsapi.com/python.html>。
 
 ## 支持范围
 
@@ -40,17 +40,6 @@ AI 客户端  --MCP（stdio）-->  TradeMcp.Quotes.exe   -->  HqApi.dll
 4. 对 AI 说「登录交易账户，查一下资金和持仓」。AI 会调用 `trade_logon_from_prefs`，密码从本机 `login_prefs.json` 读取，不经过聊天。
 
 `login_prefs.json` 含交易密码，不要发给别人，也不要提交到代码仓库。
-
-## 自己编译
-
-需要 .NET 8 SDK。
-
-```powershell
-dotnet test TradeMcp.sln -c Release
-.\scripts\publish.ps1
-```
-
-产物在 `artifacts/trading/TradeMcp.Trading.exe` 和 `artifacts/quotes/TradeMcp.Quotes.exe`。单元测试不需要 DLL，也不会下单。
 
 ## 登录方式
 
@@ -86,16 +75,6 @@ dotnet test TradeMcp.sln -c Release
 
 - DLL 返回的表格转成 UTF-8 JSON：`{ ok, headers, rows, count, truncated? }`
 - 失败：`{ ok:false, error }` 或 `{ ok:false, code, error }`
-
-## 目录
-
-```text
-src/TradeMcp.Native          P/Invoke、GBK 与表格解析
-src/TradeMcp.Core            会话、凭据、login_prefs、下单护栏
-src/TradeMcp.Quotes.Server   行情 MCP
-src/TradeMcp.Trading.Server  交易 MCP
-tests/                       单元测试（不连券商、不下单）
-```
 
 ## 许可
 

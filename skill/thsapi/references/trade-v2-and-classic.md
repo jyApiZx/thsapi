@@ -203,7 +203,5 @@ int  __stdcall SetPushCallback(int ClientID, ThsPushCallback Callback, void* Use
 
 - 授权只用资金账户号匹配，**不需要把交易密码发给授权方**。
 - 登录时只校验一次账号哈希，通过后业务只连券商交易站。
-- 价格与开通：交易接口活动价 299 元/月、2999 元/年；付款后把付款记录 + 资金账号发给 @Thsapi。
-- 完整核验：https://thsapi.com/security.html
 
 **本 Skill 严禁写入或推测任何内部协议字段名、逆向细节、未公开服务器地址或本机开发路径。**
