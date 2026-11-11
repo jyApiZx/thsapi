@@ -2,7 +2,7 @@
 
 交付库：`thsapi.dll`（`__stdcall`）。只支持 Windows。
 
-Alloc 和原函数在**同一份 DLL** 里，没有单独的 Alloc 包。**1.0.7.22 及以后**才导出 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。**稳定版 1.0.7.13 没有这些导出**（约 38 个函数），只能用 `QueryData`、`SendOrder`。不要让用户下载 `thsapi.com/downloads/thsapi_2.0.0_*.zip`，该地址无效；Python wheel 也不含 DLL。
+Alloc 和原函数在**同一份 DLL** 里，没有单独的 Alloc 包。**1.0.7.22 及以后**才导出 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。网站上的最新版和稳定版都是 **1.0.7.22**。旧包 **1.0.7.13 没有这些导出**（约 38 个函数），只能用 `QueryData`、`SendOrder`。不要让用户下载 `thsapi.com/downloads/thsapi_2.0.0_*.zip`，该地址无效；Python wheel 也不含 DLL。
 
 官网：https://thsapi.com/trade.html （Alloc 见 https://thsapi.com/trade.html#alloc ）  
 Python 用户请优先看 [python-sdk.md](python-sdk.md) 与 https://thsapi.com/python.html，不要手填登录参数。
@@ -190,7 +190,9 @@ int  __stdcall SetPushCallback(int ClientID, ThsPushCallback Callback, void* Use
 
 ## 成交回报推送（13 列）
 
-登录后注册一次 `SetPushCallback`。券商有成交时在**独立线程**回调。
+不是每家券商都支持推送。先用实盘下一笔单验证；没有回调时，轮询 `QueryData` 的当日成交，这是最可靠的做法。不要只注册推送、不写轮询。
+
+确认该券商会推送后，登录成功再注册一次 `SetPushCallback`。券商有成交时在**独立线程**回调。
 
 - `Tsv` 为 GBK（两版相同）：第一行表头，第二行一条记录。
 - **13 列固定顺序**：ClientID、推送类型、证券代码、方向、价格、数量、金额、状态、成交时间、股东代码、成交编号、剩余数量、摘要。

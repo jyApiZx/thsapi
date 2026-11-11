@@ -197,6 +197,8 @@ Client(dll_path=None, *, raise_on_error=False, column_order=True)
 
 ### 成交推送 envelope
 
+不是每家券商都支持推送。必须实盘下单验证。未验证或没有回调时，轮询当日成交，不要只依赖 `set_push_callback`。
+
 `set_push_callback(fn)` 收到的 dict 主要字段：
 
 - `client_id`、`function_id`（当前为 2304）
