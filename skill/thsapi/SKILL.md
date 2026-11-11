@@ -25,10 +25,12 @@ MCP 托管：https://thsapi.com/mcp.html
 5. **位数必须一致**：64 位程序 ↔ 64 位 DLL；32 位同理。Python 先核对解释器位数。
 6. **查询成功前不要发实盘单**。账号密码不要写进会提交的代码；用 prefs 或环境变量。示例只用假账号，例如 `12345678` / `your_password` / `trade.example.com`。
 7. **推送回调里禁止** `Logoff` / `UnInit` / `logout()` / `close()`。
-8. 同一份 DLL，两种调用方式，不要在一个项目里混用缓冲区约定：
-   - **原函数**：`QueryData`、`SendOrder` 等，GBK，调用方分配缓冲区。
-   - **Alloc 函数**：`*Alloc`，不用预分配缓冲区，结果是 UTF-8。每个非空指针用完必须释放一次，不要释放两次，不要用 `free`。
-   - **Python 包**：同一 DLL 的封装，`login_from_prefs()` / `connect_from_prefs()`，不用自己释放。
+8. **先看交易 DLL 版本，再决定用不用 Alloc。** Alloc 不是另一份 DLL，也不在 Python wheel 里。不要下载 `https://thsapi.com/downloads/thsapi_2.0.0_x64.zip`，这个地址已经无效。
+   - **最新版 1.0.7.22**：同一份 `thsapi.dll` 同时有原函数和 Alloc，导出里有 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。下载 https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.22/thsapi_1.0.7.22_x64.zip （另有 x32）。
+   - **稳定版 1.0.7.13**：只有原函数，约 38 个导出，**没有** `FreeApiBuffer` 和任何 `*Alloc`。这份库只能调用已有的 `QueryData`、`SendOrder`。要用 Alloc，换成 1.0.7.22，不要另找一个「Alloc 版 DLL」。
+   - **原函数**：GBK，调用方分配缓冲区。
+   - **Alloc 函数**（仅 1.0.7.22 及以后）：不用预分配缓冲区，结果是 UTF-8。每个非空指针用完必须 `FreeApiBuffer` 一次，不要释放两次，不要用 `free`。
+   - **Python 包**：只是调用封装，wheel 不含 DLL。`pip install` 用 GitHub `python-2.0.0` 的 whl，DLL 仍用上面的测试包。登录用 `login_from_prefs()` / `connect_from_prefs()`，不用自己释放。
 9. **安全红线**：不要写入、猜测或复述任何内部协议字段名、逆向细节、未公开服务器地址、本机开发路径或未公开隐私。只使用官网与本 Skill `references/` 已公开内容。
 10. 详细签名与字段表见 `references/`：
     - [python-sdk.md](references/python-sdk.md) — 全量方法、枚举、Field / HqField、推送、登录规则
@@ -81,8 +83,9 @@ api.disconnect()
 
 ## 非 Python（C++ / C# / Java）
 
+- 交易 DLL 用 1.0.7.22 时，可以选原函数或 Alloc。用户手里是 1.0.7.13 时，只写原函数，不要生成 `FreeApiBuffer` / `QueryDataAlloc` / `SendOrderExAlloc`。
 - **原函数**：`QueryData` / `SendOrder` / `TdxHq_GetSecurityQuotes`（GBK，调用方分配 Result/ErrInfo）。
-- **Alloc 函数**：`*Alloc` + `FreeApiBuffer` / `TdxHq_FreeBuffer`，结果 UTF-8。登录参数从 `login_prefs.json` 读（参考测试包 `cpp/` `csharp/` `java/` 示例）；`isCredit` 为 true 时登录账号前加 `X`。
+- **Alloc 函数**（交易须 1.0.7.22 及以后）：`*Alloc` + `FreeApiBuffer` / `TdxHq_FreeBuffer`，结果 UTF-8。导出表里没有该函数就不要调用。`isCredit` 为 true 时登录账号前加 `X`。
 - 登录都用 `Logon`。券商 IP、端口、营业部、`qs_id` 用 Demo 保存的配置或测试包 `ths.xml`，不要问用户猜。
 - 模拟盘：`trade.10jqka.com.cn:8002`，营业部 `48`，`{"qs_id":356,"account_type":0}`；登录账号填手机号/同花顺账户/股东账户，资金账号留空。账户填法见 https://thsapi.com/sim.html
 

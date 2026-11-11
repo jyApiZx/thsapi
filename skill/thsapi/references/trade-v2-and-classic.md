@@ -1,6 +1,8 @@
 # 交易接口：原函数与 Alloc
 
-交付库：`thsapi.dll`（`__stdcall`）。同一 DLL 同时导出两套接口。只支持 Windows。
+交付库：`thsapi.dll`（`__stdcall`）。只支持 Windows。
+
+Alloc 和原函数在**同一份 DLL** 里，没有单独的 Alloc 包。**1.0.7.22 及以后**才导出 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。**稳定版 1.0.7.13 没有这些导出**（约 38 个函数），只能用 `QueryData`、`SendOrder`。不要让用户下载 `thsapi.com/downloads/thsapi_2.0.0_*.zip`，该地址无效；Python wheel 也不含 DLL。
 
 官网：https://thsapi.com/trade.html （Alloc 见 https://thsapi.com/trade.html#alloc ）  
 Python 用户请优先看 [python-sdk.md](python-sdk.md) 与 https://thsapi.com/python.html，不要手填登录参数。

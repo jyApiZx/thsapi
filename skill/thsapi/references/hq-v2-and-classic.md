@@ -1,6 +1,6 @@
 # 行情接口：原函数与 Alloc
 
-交付库：客户包内一般为 `HqApi.dll`（内部亦可为 `TdxHqApi.dll`）。`__stdcall`。只支持 Windows。
+交付库：客户包内一般为 `HqApi.dll`（内部亦可为 `TdxHqApi.dll`）。`__stdcall`。只支持 Windows。行情测试包用 GitHub `hqapi-1.0.7.0`，不要下载 `thsapi.com/downloads/hqapi_2.0.0_*.zip`。导出表里没有 `*Alloc` 时，只用原函数。
 
 官网：https://thsapi.com/hq.html （Alloc 见 https://thsapi.com/hq.html#alloc ）  
 Python：`tdxhq` → [python-sdk.md](python-sdk.md) 与 https://thsapi.com/python.html
