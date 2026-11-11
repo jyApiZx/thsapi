@@ -21,19 +21,20 @@ MCP 托管：https://thsapi.com/mcp.html
 1. **先问清**：直接调用 DLL，还是安装 Python 包；语言；程序位数（优先 64 位）；要交易还是行情；是否信用账户。Python 用官方包。C++ / C# / Java 直接调 DLL。
 2. **Python 优先走官方 SDK**：`thsapi`（交易）与 `tdxhq`（行情）。**禁止**让用户在 Python 里手填 host / port / yyb / qs_id / config；必须 `login_from_prefs()` / `connect_from_prefs()`。
 3. **缺配置时**：引导用户先跑测试包里的 `xdDemo.exe`（交易）或 `行情测试demo.exe`（行情），**登录自己的券商（或模拟盘）**；成功会自动生成同目录 `login_prefs.json`，再写代码。
-4. **支持所有券商实盘**（普通账户 + 融资融券）。模拟账户可免费免授权先测。实盘开通：付款后把付款记录 + 资金账号发给客服，**不要索要交易密码**。
-5. **位数必须一致**：64 位程序 ↔ 64 位 DLL；32 位同理。Python 先核对解释器位数。
-6. **查询成功前不要发实盘单**。账号密码不要写进会提交的代码；用 prefs 或环境变量。示例只用假账号，例如 `12345678` / `your_password` / `trade.example.com`。
-7. **成交推送不是每家券商都支持。** 不要默认只写 `SetPushCallback` / `set_push_callback`。必须用实盘下一笔单验证这个券商真的会回调。还没验证、或验证没有推送时，用 `QueryData`（当日成交）轮询，这是最可靠的做法。推送回调里禁止 `Logoff` / `UnInit` / `logout()` / `close()`。
-8. **先看交易 DLL 版本，再决定用不用 Alloc。** Alloc 不是另一份 DLL，也不在 Python wheel 里。不要下载 `https://thsapi.com/downloads/thsapi_2.0.0_x64.zip`，这个地址已经无效。
+4. **登录不上时不要改代码猜地址。** 先让用户打开**同花顺官方电脑版客户端**，用同一套账号登录一次。客户端能登录，这个接口就能登录。客户端也登录不了，不是接口故障，请用户向所属券商确认账号、密码和交易权限。
+5. **支持所有券商实盘**（普通账户 + 融资融券）。模拟账户可免费免授权先测。实盘开通：付款后把付款记录 + 资金账号发给客服，**不要索要交易密码**。
+6. **位数必须一致**：64 位程序 ↔ 64 位 DLL；32 位同理。Python 先核对解释器位数。
+7. **查询成功前不要发实盘单**。账号密码不要写进会提交的代码；用 prefs 或环境变量。示例只用假账号，例如 `12345678` / `your_password` / `trade.example.com`。
+8. **成交推送不是每家券商都支持。** 不要默认只写 `SetPushCallback` / `set_push_callback`。必须用实盘下一笔单验证这个券商真的会回调。还没验证、或验证没有推送时，用 `QueryData`（当日成交）轮询，这是最可靠的做法。推送回调里禁止 `Logoff` / `UnInit` / `logout()` / `close()`。
+9. **先看交易 DLL 版本，再决定用不用 Alloc。** Alloc 不是另一份 DLL，也不在 Python wheel 里。不要下载 `https://thsapi.com/downloads/thsapi_2.0.0_x64.zip`，这个地址已经无效。
    - **最新版 1.0.7.22**：同一份 `thsapi.dll` 同时有原函数和 Alloc，导出里有 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。下载 https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.22/thsapi_1.0.7.22_x64.zip （另有 x32）。
    - **网站上的最新版和稳定版都是 1.0.7.22。** 让用户下这一版。
    - **旧包 1.0.7.13**：只有原函数，约 38 个导出，**没有** `FreeApiBuffer` 和任何 `*Alloc`。用户已经拿着这份库时，只能调用 `QueryData`、`SendOrder`，不要生成 Alloc。要 Alloc 就换成 1.0.7.22，不要另找一个「Alloc 版 DLL」。
    - **原函数**：GBK，调用方分配缓冲区。
    - **Alloc 函数**（仅 1.0.7.22 及以后）：不用预分配缓冲区，结果是 UTF-8。每个非空指针用完必须 `FreeApiBuffer` 一次，不要释放两次，不要用 `free`。
    - **Python 包**：只是调用封装，wheel 不含 DLL。`pip install` 用 GitHub `python-2.0.0` 的 whl，DLL 仍用上面的测试包。登录用 `login_from_prefs()` / `connect_from_prefs()`，不用自己释放。
-9. **安全红线**：不要写入、猜测或复述任何内部协议字段名、逆向细节、未公开服务器地址、本机开发路径或未公开隐私。只使用官网与本 Skill `references/` 已公开内容。
-10. 详细签名与字段表见 `references/`：
+10. **安全红线**：不要写入、猜测或复述任何内部协议字段名、逆向细节、未公开服务器地址、本机开发路径或未公开隐私。只使用官网与本 Skill `references/` 已公开内容。
+11. 详细签名与字段表见 `references/`：
     - [python-sdk.md](references/python-sdk.md) — 全量方法、枚举、Field / HqField、推送、登录规则
     - [trade-v2-and-classic.md](references/trade-v2-and-classic.md) — C 导出、类别表、fieldID、13 列推送
     - [hq-v2-and-classic.md](references/hq-v2-and-classic.md) — A 股 / 扩展行情导出与通道
