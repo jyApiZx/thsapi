@@ -27,8 +27,8 @@
 
 包内是 `thsapi.dll`、`xdDemo.exe`。
 
-- 最新版 1.0.7.13：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)
-- 稳定版 1.0.7.12：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.12/thsapi_1.0.7.12_x32.zip)
+- 最新版 1.0.7.22：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.22/thsapi_1.0.7.22_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.22/thsapi_1.0.7.22_x32.zip)
+- 稳定版 1.0.7.13：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.13/thsapi_1.0.7.13_x32.zip)
 
 ### 行情 DLL（通达信行情接口 `HqApi.dll`）
 
