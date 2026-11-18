@@ -8,6 +8,7 @@ Skill 入口：先读上级 [SKILL.md](../SKILL.md)。
 - Python 用户禁止手填 host / port / yyb / qs_id / config；必须 `login_from_prefs()` / `connect_from_prefs()`。
 - 缺 `login_prefs.json` 时，引导用户先跑 `xdDemo.exe`（交易）或 `行情测试demo.exe`（行情），登录自己的券商或模拟盘一次。
 - 登录提示「证券账户不存在」或「密码错误」时，先让用户打开同花顺官方电脑版客户端，用同一套账号登录。客户端能登录，接口就能登录。客户端也登录不了，请用户问所属券商。
+- `login_from_prefs()` 成功后不要为每次查询或下单再登录。会话没关闭前，继续用同一个客户端对象调用查询、下单、撤单。登录本身要鉴权，可能要几十秒。
 - 程序位数必须与 DLL 一致（优先 64 位）。
 - 单元格默认是字符串；金额优先 `Decimal`。
 - 查询成功前不要发实盘单；推送回调里禁止 `logout()` / `close()`。

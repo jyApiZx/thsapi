@@ -17,7 +17,7 @@ Python 用户请优先看 [python-sdk.md](python-sdk.md) 与 https://thsapi.com/
 | 表头 | 带稳定 fieldID（如 `可用金额_2116`） | 开启 `EnableResultColumnIdSuffix(1)` 后带 ID |
 | 典型函数 | `QueryDataAlloc`、`SendOrderExAlloc` | `QueryData`、`SendOrder` / `SendOrderEx` |
 
-流程：`Init`/`OpenTdx` → `Logon` → 业务 → `Logoff` → `UnInit`/`CloseTdx`。进程级 Init/Close 各一次。同一 `ClientID` **串行**；不同 ClientID 可并行。
+流程：`Init`/`OpenTdx` → `Logon` → 业务 → `Logoff` → `UnInit`/`CloseTdx`。进程级 Init/Close 各一次。登录要鉴权，可能要几十秒。登录成功后不要为每次查询或下单重新 `Logon`。只要没有 `Logoff`，就用同一个 `ClientID` 调用其他接口。同一 `ClientID` **串行**；不同 ClientID 可并行。
 
 ---
 
