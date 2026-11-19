@@ -27,8 +27,8 @@
 
 包内是 `thsapi.dll`、`xdDemo.exe`。
 
-- 最新版 1.0.7.24：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.24/thsapi_1.0.7.24_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.24/thsapi_1.0.7.24_x32.zip)。这份 DLL 同时有原函数和 Alloc（`FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`）。
-- 稳定版 1.0.7.23：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.23/thsapi_1.0.7.23_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.23/thsapi_1.0.7.23_x32.zip)。同样有 Alloc。旧的 1.0.7.13 没有 Alloc。
+- 最新版 1.0.7.25：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x32.zip)。这份 DLL 同时有原函数和 Alloc（`FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`）。
+- 稳定版 1.0.7.25：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x32.zip)。同样有 Alloc。旧的 1.0.7.13 没有 Alloc。
 
 ### 行情 DLL（通达信行情接口 `HqApi.dll`）
 
