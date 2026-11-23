@@ -303,7 +303,7 @@ from tdxhq import HqClient, HqField, Period
 
 api = HqClient()  # 或 dll_path=r"...\\HqApi.dll"
 api.connect_from_prefs(lane="L1").raise_for_status()
-q = api.quotes(["600519", "000001"])
+q = api.quotes(["600519", "000001"])  # 批量五档走 HqApi.dll。交易 DLL 的 GetQuotes 内部是逐只串行
 print(q.rows[0][HqField.PRICE])
 print(api.bars("600519", period=Period.DAILY, count=5).rows)
 api.disconnect()

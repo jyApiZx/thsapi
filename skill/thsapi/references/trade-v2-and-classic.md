@@ -2,7 +2,7 @@
 
 交付库：`thsapi.dll`（`__stdcall`）。只支持 Windows。
 
-Alloc 和原函数在**同一份 DLL** 里，没有单独的 Alloc 包。**1.0.7.22 及以后**才导出 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。网站最新版和稳定版都是 **1.0.7.25**，这份有 Alloc。旧包 **1.0.7.13 没有这些导出**（约 38 个函数），只能用 `QueryData`、`SendOrder`。不要让用户下载 `thsapi.com/downloads/thsapi_2.0.0_*.zip`，该地址无效；Python wheel 也不含 DLL。
+Alloc 和原函数在**同一份 DLL** 里，没有单独的 Alloc 包。**1.0.7.22 及以后**才导出 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。网站最新版是 **1.0.7.30**，稳定版是 **1.0.7.25**，这两份都有 Alloc。旧包 **1.0.7.13 没有这些导出**（约 38 个函数），只能用 `QueryData`、`SendOrder`。不要让用户下载 `thsapi.com/downloads/thsapi_2.0.0_*.zip`，该地址无效；Python wheel 也不含 DLL。
 
 官网：https://thsapi.com/trade.html （Alloc 见 https://thsapi.com/trade.html#alloc ）  
 Python 用户请优先看 [python-sdk.md](python-sdk.md) 与 https://thsapi.com/python.html，不要手填登录参数。
@@ -70,7 +70,7 @@ void __stdcall QueryMultiAccountsDatas(...);    /* 多账户 */
 void __stdcall GetShareholderCodes(int ClientID, char* Result, char* ErrInfo);
 
 void __stdcall GetQuote(int ClientID, char* Zqdm, char* Result, char* ErrInfo);
-void __stdcall GetQuotes(...);
+void __stdcall GetQuotes(...);   /* 可一次传入多只代码，内部仍逐只串行。批量追求速度用 HqApi.dll */
 void __stdcall GetMultiAccountsQuotes(...);
 int  __stdcall GetTradableQuantity(int ClientID, int Category, int PriceType, char* Gddm, char* Zqdm, float Price, char* Result, char* ErrInfo);
 int  __stdcall GetCanBuySell(...);

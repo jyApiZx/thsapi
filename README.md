@@ -15,7 +15,7 @@
 
 - 同花顺交易接口：登录后查询资金、持仓、委托和成交，再下单、撤单。成交推送不是每家券商都支持，要实盘下单验证；没有推送时用查询轮询。
 - 支持融资融券、新股申购、场内基金和银证转账。可以单账户操作，也可以多个账户同时在线。
-- 通达信行情接口：L1 五档、Tick、分时和 K 线，扩展行情含美股、港股、期货。交易连接上也可以取五档快照。
+- 通达信行情接口：L1 五档、Tick、分时和 K 线，扩展行情含美股、港股、期货。交易接口的 `GetQuotes` 内部是逐只串行；批量拉行情、追求速度用 `HqApi.dll`。
 - Python 包（`thsapi` / `tdxhq`）在同一 DLL 上把登录和内存释放包好。
 - MCP 开源：把同花顺交易接口和通达信行情接口交给常用 AI，用一句话查持仓、看行情、下单。
 
@@ -27,7 +27,7 @@
 
 包内是 `thsapi.dll`、`xdDemo.exe`。
 
-- 最新版 1.0.7.25：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x32.zip)。这份 DLL 同时有原函数和 Alloc（`FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`）。
+- 最新版 1.0.7.30：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.30/thsapi_1.0.7.30_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.30/thsapi_1.0.7.30_x32.zip)。这份 DLL 同时有原函数和 Alloc（`FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`）。
 - 稳定版 1.0.7.25：[64 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x64.zip) · [32 位](https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x32.zip)。同样有 Alloc。旧的 1.0.7.13 没有 Alloc。
 
 ### 行情 DLL（通达信行情接口 `HqApi.dll`）

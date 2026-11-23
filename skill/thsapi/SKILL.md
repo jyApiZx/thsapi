@@ -28,9 +28,9 @@ MCP 托管：https://thsapi.com/mcp.html
 8. **查询成功前不要发实盘单**。账号密码不要写进会提交的代码；用 prefs 或环境变量。示例只用假账号，例如 `12345678` / `your_password` / `trade.example.com`。
 9. **成交推送不是每家券商都支持。** 不要默认只写 `SetPushCallback` / `set_push_callback`。必须用实盘下一笔单验证这个券商真的会回调。还没验证、或验证没有推送时，用 `QueryData`（当日成交）轮询，这是最可靠的做法。推送回调里禁止 `Logoff` / `UnInit` / `logout()` / `close()`。
 10. **先看交易 DLL 版本，再决定用不用 Alloc。** Alloc 不是另一份 DLL，也不在 Python wheel 里。不要下载 `https://thsapi.com/downloads/thsapi_2.0.0_x64.zip`，这个地址已经无效。
-   - **最新版 1.0.7.25**：同一份 `thsapi.dll` 同时有原函数和 Alloc，导出里有 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。下载 https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.25/thsapi_1.0.7.25_x64.zip （另有 x32）。
-   - **稳定版也是 1.0.7.25**，和最新版是同一份包，同样有 Alloc。
-   - **旧包 1.0.7.13**：只有原函数，约 38 个导出，**没有** `FreeApiBuffer` 和任何 `*Alloc`。用户已经拿着这份库时，只能调用 `QueryData`、`SendOrder`，不要生成 Alloc。要 Alloc 就换成 1.0.7.25，不要另找一个「Alloc 版 DLL」。
+   - **最新版 1.0.7.30**：同一份 `thsapi.dll` 同时有原函数和 Alloc，导出里有 `FreeApiBuffer`、`QueryDataAlloc`、`SendOrderExAlloc`。下载 https://github.com/jyApiZx/thsapi/releases/download/v1.0.7.30/thsapi_1.0.7.30_x64.zip （另有 x32）。
+   - **稳定版 1.0.7.25** 也有 Alloc。让用户下 1.0.7.30；已在用 1.0.7.25 可以继续用。
+   - **旧包 1.0.7.13**：只有原函数，约 38 个导出，**没有** `FreeApiBuffer` 和任何 `*Alloc`。用户已经拿着这份库时，只能调用 `QueryData`、`SendOrder`，不要生成 Alloc。要 Alloc 就换成 1.0.7.30，不要另找一个「Alloc 版 DLL」。
    - **原函数**：GBK，调用方分配缓冲区。
    - **Alloc 函数**（仅 1.0.7.22 及以后）：不用预分配缓冲区，结果是 UTF-8。每个非空指针用完必须 `FreeApiBuffer` 一次，不要释放两次，不要用 `free`。
    - **Python 包**：只是调用封装，wheel 不含 DLL。`pip install` 用 GitHub `python-2.0.0` 的 whl，DLL 仍用上面的测试包。登录用 `login_from_prefs()` / `connect_from_prefs()`，不用自己释放。
@@ -49,6 +49,8 @@ MCP 托管：https://thsapi.com/mcp.html
 **我下一单要一百多毫秒，为什么你们写的是 45 毫秒？** 45 毫秒是单次实测，不是每台电脑、每家券商都能达到的固定值。下单耗时受网络环境、券商交易站点、本机配置影响。用测试包在自己的网络里测一次，更接近实际速度。
 
 **下单返回 `[251068][该账户类别不允许委托该类品种]` 怎么办？** 先看股东代码。一个账户经常有多个股东代码，上海、深圳要分开用。先打开 `xdDemo.exe` 登录，查询股东代码，再核对自己程序里填的股东代码是否和证券品种、市场一致。
+
+**`GetQuotes` 一次查很多只，为什么还是慢？** 这个函数可以一次传入多只代码，内部仍是逐只串行查询。要批量拉行情、追求速度，用专门的行情库 `HqApi.dll`。
 
 ## 安装（本机 / 官网 wheel，不上 PyPI）
 
@@ -96,7 +98,8 @@ api.disconnect()
 
 ## 非 Python（C++ / C# / Java）
 
-- 交易 DLL 是 1.0.7.22 及以后（含 1.0.7.25）时，可以选原函数或 Alloc。用户手里是 1.0.7.13 时，只写原函数，不要生成 `FreeApiBuffer` / `QueryDataAlloc` / `SendOrderExAlloc`。
+- 交易 DLL 是 1.0.7.22 及以后（含 1.0.7.30）时，可以选原函数或 Alloc。用户手里是 1.0.7.13 时，只写原函数，不要生成 `FreeApiBuffer` / `QueryDataAlloc` / `SendOrderExAlloc`。
+- `GetQuotes` 一次可以传入多只代码，内部仍是逐只串行。批量拉行情、追求速度时用 `HqApi.dll`，不要把交易接口的 `GetQuotes` 当成批量行情通道。
 - **原函数**：`QueryData` / `SendOrder` / `TdxHq_GetSecurityQuotes`（GBK，调用方分配 Result/ErrInfo）。
 - **Alloc 函数**（交易须 1.0.7.22 及以后）：`*Alloc` + `FreeApiBuffer` / `TdxHq_FreeBuffer`，结果 UTF-8。导出表里没有该函数就不要调用。`isCredit` 为 true 时登录账号前加 `X`。
 - 登录都用 `Logon`。券商 IP、端口、营业部、`qs_id` 用 Demo 保存的配置或测试包 `ths.xml`，不要问用户猜。
